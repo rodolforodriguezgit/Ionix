@@ -33,6 +33,9 @@ docker-compose up -d
 - **MySQL** en el puerto `3306`
 - **phpMyAdmin** en el puerto `8081`
 
+##correr la apcacion
+dentro de la carpeta click derecho al achivo y ejecutar con java el siguiente archivo:
+\Ionix\src\main\java\com\ionix\IonixApplication.java
 
 
 Acceso a phpMyAdmin: http://localhost:8081
