@@ -25,19 +25,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse createUser(UserRequest userRequest) {
-        log.info("Creating user with email: {}", userRequest.getEmail());
+        log.info("Creando usuario con email: {}", userRequest.getEmail());
         
         if (userRepository.existsByEmail(userRequest.getEmail())) {
-            throw new IllegalArgumentException("User with email " + userRequest.getEmail() + " already exists");
+            throw new IllegalArgumentException("El usuario con email " + userRequest.getEmail() + " ya existe");
         }
         
         if (userRepository.existsByUsername(userRequest.getUsername())) {
-            throw new IllegalArgumentException("User with username " + userRequest.getUsername() + " already exists");
+            throw new IllegalArgumentException("El usuario con nombre de usuario " + userRequest.getUsername() + " ya existe");
         }
         
         User user = userMapper.toEntity(userRequest);
         User savedUser = userRepository.save(user);
-        log.info("User created successfully with id: {}", savedUser.getId());
+        log.info("Usuario creado exitosamente con id: {}", savedUser.getId());
         
         return userMapper.toResponse(savedUser);
     }
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<UserResponse> getAllUsers() {
-        log.info("Retrieving all users");
+        log.info("Recuperando todos los usuarios");
         return userRepository.findAll()
                 .stream()
                 .map(userMapper::toResponse)
@@ -55,19 +55,19 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserResponse getUserByEmail(String email) {
-        log.info("Retrieving user by email: {}", email);
+        log.info("Recuperando usuario por email: {}", email);
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User with email " + email + " not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuario con email " + email + " no encontrado"));
         return userMapper.toResponse(user);
     }
 
     @Override
     public void deleteUser(Long id) {
-        log.info("Deleting user with id: {}", id);
+        log.info("Eliminando usuario con id: {}", id);
         if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("User with id " + id + " not found");
+            throw new IllegalArgumentException("Usuario con id " + id + " no encontrado");
         }
         userRepository.deleteById(id);
-        log.info("User deleted successfully with id: {}", id);
+        log.info("Usuario eliminado exitosamente con id: {}", id);
     }
 }
