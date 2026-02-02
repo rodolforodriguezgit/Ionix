@@ -115,3 +115,5 @@ Content-Type: application/json
   "param": "1-9"
 }
 
+##para los test
+puede ir a la carpeta src\test\java\com\ionix y darle run Test con boron derecho
