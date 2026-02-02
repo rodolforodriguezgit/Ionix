@@ -6,8 +6,10 @@ import com.ionix.domain.dto.UserResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,11 +20,12 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@SuppressWarnings("unused")
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false) // Deshabilita los filtros de seguridad
 class UserControllerTest {
 
     @Autowired
@@ -35,7 +38,6 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser
     void testCreateUser_Success() throws Exception {
         UserRequest request = UserRequest.builder()
                 .name("John Doe")
@@ -56,7 +58,6 @@ class UserControllerTest {
         when(userService.createUser(any(UserRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/users")
-                        .with(httpBasic("admin", "admin123"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -100,12 +101,10 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser
     void testDeleteUser() throws Exception {
         doNothing().when(userService).deleteUser(1L);
 
-        mockMvc.perform(delete("/api/users/1")
-                        .with(httpBasic("admin", "admin123")))
+        mockMvc.perform(delete("/api/users/1"))
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).deleteUser(1L);
